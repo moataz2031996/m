@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة التحكم | منصة الفنار</title>
+</head>
+<body>
+  <h2>إضافة حصة جديدة</h2>
+  <input type="text" id="title" placeholder="عنوان الحصة" />
+  <input type="text" id="url" placeholder="رابط الفيديو (YouTube Embed)" />
+  <input type="text" id="code" placeholder="كود الحصة" />
+  <button onclick="add()">إضافة</button>
+
+  <script>
+    async function add() {
+      const title = document.getElementById('title').value;
+      const url = document.getElementById('url').value;
+      const code = document.getElementById('code').value;
+      const res = await fetch('/api/lessons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, url, code })
+      });
+      if (res.ok) {
+        alert('تمت الإضافة');
+      } else {
+        alert('فشل الإضافة');
+      }
+    }
+  </script>
+</body>
+</html>

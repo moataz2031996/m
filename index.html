@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>الطالب | منصة الفنار</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    input { margin: 10px; padding: 10px; width: 80%; }
+    button { padding: 10px 20px; }
+    iframe { margin-top: 20px; width: 90%; height: 300px; }
+  </style>
+</head>
+<body>
+  <h2>تسجيل الدخول</h2>
+  <input type="text" id="phone" placeholder="رقم الهاتف" />
+  <button onclick="register()">تسجيل</button>
+
+  <div id="code-section" style="display:none;">
+    <input type="text" id="code" placeholder="أدخل كود الحصة" />
+    <button onclick="access()">مشاهدة</button>
+  </div>
+
+  <div id="video-section" style="display:none;">
+    <h3 id="lesson-title"></h3>
+    <iframe id="video-frame" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    async function register() {
+      const phone = document.getElementById('phone').value;
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
+      });
+      if (res.ok) {
+        document.getElementById('code-section').style.display = 'block';
+      } else {
+        alert('فشل التسجيل');
+      }
+    }
+
+    async function access() {
+      const code = document.getElementById('code').value;
+      const res = await fetch('/api/lessons/' + code);
+      const data = await res.json();
+      if (data.url) {
+        document.getElementById('lesson-title').innerText = data.title;
+        document.getElementById('video-frame').src = data.url;
+        document.getElementById('video-section').style.display = 'block';
+      } else {
+        alert('الكود غير صالح');
+      }
+    }
+  </script>
+</body>
+</html>
